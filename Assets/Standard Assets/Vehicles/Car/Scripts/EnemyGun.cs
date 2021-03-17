@@ -20,6 +20,7 @@ namespace UnityStandardAssets.Vehicles.Car
         private Transform target;
         private float currentTimeForBullet = 0f;
         private float currentTimeForCanon = 0f;
+        private bool playerDied = false;
 
 
         // Start is called before the first frame update
@@ -36,7 +37,7 @@ namespace UnityStandardAssets.Vehicles.Car
         // Update is called once per frame
         void Update()
         {
-            rotateHolders();
+            if( !playerDied ) rotateHolders();
         }
 
 
@@ -89,6 +90,11 @@ namespace UnityStandardAssets.Vehicles.Car
                 shootCanon();
                 currentTimeForCanon = 0;
             }
+        }
+
+        public void stopShooting()
+        {
+            playerDied = true;
         }
     }
 }

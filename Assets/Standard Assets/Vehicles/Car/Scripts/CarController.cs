@@ -1,4 +1,4 @@
-using System;
+using UnityEngine.UI;
 using UnityEngine;
 
 #pragma warning disable 649
@@ -47,7 +47,9 @@ namespace UnityStandardAssets.Vehicles.Car
         private float m_CurrentTorque;
         private Rigidbody m_Rigidbody;
         private const float k_ReversingThreshold = 0.01f;
+        private CarHelper carHelper;
 
+        public ParticleSystem afterExplotionFireEffect;
         public bool Skidding { get; private set; }
         public float BrakeInput { get; private set; }
         public float CurrentSteerAngle{ get { return m_SteerAngle; }}
@@ -70,6 +72,14 @@ namespace UnityStandardAssets.Vehicles.Car
 
             m_Rigidbody = GetComponent<Rigidbody>();
             m_CurrentTorque = m_FullTorqueOverAllWheels - (m_TractionControl*m_FullTorqueOverAllWheels);
+            carHelper = GetComponent<CarHelper>();
+            afterExplotionFireEffect.gameObject.SetActive(false);
+        }
+
+
+        private void Update()
+        {
+            if (carHelper.healthHelper.getCurentHealth() <= 0) afterExplotionFireEffect.gameObject.SetActive(true) ;
         }
 
 
