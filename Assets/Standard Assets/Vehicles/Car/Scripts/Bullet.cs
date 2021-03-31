@@ -11,9 +11,9 @@ namespace UnityStandardAssets.Vehicles.Car
             GameObject hitGameObject = collision.gameObject;
 
             if(hitGameObject.name == "Car")
-                bulletHelper.searchAndDestroy(hitGameObject, hitGameObject.name, gameObject, 5f);
+                bulletHelper.searchAndDestroy(hitGameObject, hitGameObject.name, gameObject, 4f);
             else if(hitGameObject.name == "EnemyCar")
-                bulletHelper.searchAndDestroy(hitGameObject, hitGameObject.name, gameObject, 10f);
+                bulletHelper.searchAndDestroy(hitGameObject, hitGameObject.name, gameObject, 6f);
             
         }
 

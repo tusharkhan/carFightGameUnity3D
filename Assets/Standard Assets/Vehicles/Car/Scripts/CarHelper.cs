@@ -16,10 +16,7 @@ namespace UnityStandardAssets.Vehicles.Car
         void Start()
         {
             healthHelper = new HealthHelper();
-            healthHelper.setMaxHealth(carMaxHealth);
-            healthHelper.setCurrentHealth( healthHelper.getMaxHealth() );
-            healthSlider.maxValue = healthHelper.getMaxHealth();
-            healthSlider.value = healthHelper.getMaxHealth();
+            setInitHealth();
             explotionParticleSystem.Stop();
             mainCam = Camera.main;
         }
@@ -31,6 +28,15 @@ namespace UnityStandardAssets.Vehicles.Car
 
             if (gameObject.name == "Car") updateCarHealth();
             else if (gameObject.name == "EnemyCar") updateEnemyHealth(); 
+        }
+
+
+        private void setInitHealth()
+        {
+            healthHelper.setMaxHealth(carMaxHealth);
+            healthHelper.setCurrentHealth(healthHelper.getMaxHealth());
+            healthSlider.maxValue = healthHelper.getMaxHealth();
+            healthSlider.value = healthHelper.getMaxHealth();
         }
 
 

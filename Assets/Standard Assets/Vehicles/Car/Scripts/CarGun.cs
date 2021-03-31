@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace UnityStandardAssets.Vehicles.Car { 
     public class CarGun : MonoBehaviour
@@ -10,6 +8,12 @@ namespace UnityStandardAssets.Vehicles.Car {
 
         public Transform leftSpwonPosition;
         public Transform rightSpwonPosition;
+
+        public GameObject leftMuzzleFlash;
+        public GameObject rightMuzzleFlash;
+
+        public ParticleSystem leftMuzzleFlashParticle;
+        public ParticleSystem rightMuzzleFlashParticle;
 
         public GameObject gunBullet;
 
@@ -37,7 +41,50 @@ namespace UnityStandardAssets.Vehicles.Car {
             {
                 gunHelper.moveBullet(gunBullet, leftSpwonPosition);
                 gunHelper.moveBullet(gunBullet, rightSpwonPosition);
+                playAllMuzzleflash();
             }
+            else stopAllMuzzleflash();
+        }
+
+
+        private void playAllMuzzleflash()
+        {
+            lightMuzzleflash();
+            lightMuzzleflashParticle();
+        }
+
+
+        private void stopAllMuzzleflash()
+        {
+            stopMuzzleflash();
+            stopMuzzleflashParticle();
+        }
+
+        private void lightMuzzleflashParticle()
+        {
+            leftMuzzleFlashParticle.Play();
+            rightMuzzleFlashParticle.Play();
+        }
+
+
+        private void stopMuzzleflashParticle()
+        {
+            leftMuzzleFlashParticle.Stop();
+            rightMuzzleFlashParticle.Stop();
+        }
+
+
+        private void lightMuzzleflash()
+        {
+            leftMuzzleFlash.SetActive(true);
+            rightMuzzleFlash.SetActive(true);
+        }
+
+
+        private void stopMuzzleflash()
+        {
+            leftMuzzleFlash.SetActive(false);
+            rightMuzzleFlash.SetActive(false);
         }
 
 

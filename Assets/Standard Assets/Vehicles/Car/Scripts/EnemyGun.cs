@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace UnityStandardAssets.Vehicles.Car
 {
@@ -16,6 +14,9 @@ namespace UnityStandardAssets.Vehicles.Car
         public GameObject bullet;
         public GameObject canonBullet;
 
+        public GameObject leftMuzzleFlash;
+        public GameObject rightMuzzleFlash;
+
         private CarGunHelper gunHelper;
         private Transform target;
         private float currentTimeForBullet = 0f;
@@ -28,7 +29,7 @@ namespace UnityStandardAssets.Vehicles.Car
         {
             gunHelper = new CarGunHelper();
             gunHelper.rotateSpeed = 9;
-            gunHelper.timeIntervalBullet = 0.8f;
+            gunHelper.timeIntervalBullet = 0.6f;
             gunHelper.timeIntervalCanonBullet = 5f;
             gunHelper.bulletSpeed = 150f;
             target = GameObject.Find("Target").transform;
@@ -82,8 +83,10 @@ namespace UnityStandardAssets.Vehicles.Car
             if (calculateTimeForBullet() >= gunHelper.timeIntervalBullet)
             {
                 shootGun();
+                lightMuzzleflash();
                 currentTimeForBullet = 0f;
             }
+            else stopMuzzleflash();
 
             if (calculateTimeForCanon() >= gunHelper.timeIntervalCanonBullet)
             {
@@ -95,6 +98,21 @@ namespace UnityStandardAssets.Vehicles.Car
         public void stopShooting()
         {
             playerDied = true;
+        }
+
+
+
+        private void lightMuzzleflash()
+        {
+            leftMuzzleFlash.SetActive(true);
+            rightMuzzleFlash.SetActive(true);
+        }
+
+
+        private void stopMuzzleflash()
+        {
+            leftMuzzleFlash.SetActive(false);
+            rightMuzzleFlash.SetActive(false);
         }
     }
 }

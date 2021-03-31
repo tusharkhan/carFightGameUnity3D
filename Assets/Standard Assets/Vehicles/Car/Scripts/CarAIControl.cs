@@ -45,6 +45,7 @@ namespace UnityStandardAssets.Vehicles.Car
         private float m_AvoidOtherCarSlowdown;    // how much to slow down due to colliding with another car, whilst avoiding
         private float m_AvoidPathOffset;          // direction (-1 or 1) in which to offset path to avoid other car, whilst avoiding
         private Rigidbody m_Rigidbody;
+        [SerializeField]
         private bool playerDied = false;
 
 
@@ -59,6 +60,10 @@ namespace UnityStandardAssets.Vehicles.Car
             m_Rigidbody = GetComponent<Rigidbody>();
         }
 
+        public void setDriving(bool value)
+        {
+            playerDied = value;
+        }
 
         private void FixedUpdate()
         {
@@ -66,19 +71,19 @@ namespace UnityStandardAssets.Vehicles.Car
             {
                 if (Vector3.Distance(transform.position, m_Target.position) > 20f)
                 {
-                    m_Driving = true;
-                    m_CarController.Move(0, 1, 1f, 0);
+                    m_Driving = false;
+                    m_CarController.Move(0, 0, -1f, 0);
                 }
                 else
                 {
-                    m_Driving = false;
+                    m_Driving = true;
                 }
 
                 if (m_Target == null || !m_Driving)
                 {
                     // Car should not be moving,
                     // use handbrake to stop
-                    m_CarController.Move(0, -1f, -1f, 0);
+                    m_CarController.Move(0, 0f, 0f, 0);
                 }
                 else
                 {
@@ -182,7 +187,7 @@ namespace UnityStandardAssets.Vehicles.Car
                     float steer = Mathf.Clamp(targetAngle * m_SteerSensitivity, -1, 1) * Mathf.Sign(m_CarController.CurrentSpeed);
 
                     // feed input to the car controller.
-                    m_CarController.Move(steer, accel, accel, 0f);
+                    m_CarController.Move(steer, accel * 2, accel, 0f);
 
                     // if appropriate, stop driving when we're close enough to the target.
                     if (m_StopWhenTargetReached && localTarget.magnitude < m_ReachTargetThreshold)

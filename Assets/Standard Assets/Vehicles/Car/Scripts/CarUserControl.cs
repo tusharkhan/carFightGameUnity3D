@@ -1,4 +1,4 @@
-using System.Collections;
+using UnityEngine.UI;
 using UnityEngine;
 using UnityStandardAssets.CrossPlatformInput;
 
@@ -16,14 +16,15 @@ namespace UnityStandardAssets.Vehicles.Car
         private float shieldResolveCounterLinit = 15;
         [SerializeField]
         private float physicsColliderArea = 4f;
-
+        private bool shieldActive = false;
         public ParticleSystem shieldParticle;
+        public Slider resolveCounterSlider;
 
         private void Awake()
         {
             // get the car controller
             m_Car = GetComponent<CarController>();
-            //shieldParticle.Stop();
+            resolveCounterSlider.value = 0;
         }
 
 
@@ -43,8 +44,17 @@ namespace UnityStandardAssets.Vehicles.Car
         }
 
 
+        private void changeSliderMaxValue()
+        {
+            if (shieldActive) resolveCounterSlider.maxValue = shieldCounterLinit;
+            else resolveCounterSlider.maxValue = shieldResolveCounterLinit;
+        }
+
+
         public void makeShield()
         {
+            changeSliderMaxValue();
+
             shieldParticle.transform.position = transform.position;
             if (getShieldResolveCounter() >= (shieldResolveCounterLinit + 1) )
             {
@@ -77,6 +87,7 @@ namespace UnityStandardAssets.Vehicles.Car
 
         private void activateShield()
         {
+            shieldActive = true;
             shieldParticle.gameObject.SetActive(true);
         }
 
@@ -84,12 +95,14 @@ namespace UnityStandardAssets.Vehicles.Car
         private void shieldActiveCounterStart()
         {
             shieldCounter += Time.deltaTime;
+            resolveCounterSlider.value = (shieldCounterLinit - shieldCounter);
         }
 
 
 
         private void deactivateShield()
         {
+            shieldActive = false;
             stopShieldCounter();
             shieldParticle.gameObject.SetActive(false);
         }
@@ -122,6 +135,7 @@ namespace UnityStandardAssets.Vehicles.Car
         private void shieldResolveCounterStart()
         {
             shieldResolveCounter += Time.deltaTime;
+            resolveCounterSlider.value = shieldResolveCounter;
         }
 
 

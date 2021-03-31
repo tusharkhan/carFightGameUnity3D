@@ -366,13 +366,16 @@ namespace UnityStandardAssets.Vehicles.Car
         private bool AnySkidSoundPlaying()
         {
             for (int i = 0; i < 4; i++)
-            {
                 if (m_WheelEffects[i].PlayingAudio)
-                {
                     return true;
-                }
-            }
+
             return false;
+        }
+
+
+        public int getCurrentGear()
+        {
+            return m_GearNum;
         }
     }
 }
