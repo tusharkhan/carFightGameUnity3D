@@ -17,6 +17,8 @@ namespace UnityStandardAssets.Vehicles.Car
         public GameObject leftMuzzleFlash;
         public GameObject rightMuzzleFlash;
 
+        public AudioSource audioSource;
+
         private CarGunHelper gunHelper;
         private Transform target;
 
@@ -61,6 +63,7 @@ namespace UnityStandardAssets.Vehicles.Car
 
         private void shootGun() 
         {
+            audioSource.Play();
             gunHelper.moveBullet(bullet, leftSpwonPoint);
             gunHelper.moveBullet(bullet, rightSpwonPoint);
         }

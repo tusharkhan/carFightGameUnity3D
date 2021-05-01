@@ -16,6 +16,7 @@ namespace UnityStandardAssets.Vehicles.Car {
         public ParticleSystem rightMuzzleFlashParticle;
 
         public GameObject gunBullet;
+        public AudioSource audioSource;
 
         private CarGunHelper gunHelper;
 
@@ -37,13 +38,17 @@ namespace UnityStandardAssets.Vehicles.Car {
 
         private void fire()
         {
-            if (Input.GetButton("Fire1"))
+            if (Input.GetButtonDown("Fire1"))
             {
                 gunHelper.moveBullet(gunBullet, leftSpwonPosition);
                 gunHelper.moveBullet(gunBullet, rightSpwonPosition);
                 playAllMuzzleflash();
+                audioSource.Play();
             }
-            else stopAllMuzzleflash();
+            else
+            {
+                stopAllMuzzleflash();
+            }
         }
 
 
