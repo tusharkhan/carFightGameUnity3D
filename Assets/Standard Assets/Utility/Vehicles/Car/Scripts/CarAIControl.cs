@@ -49,6 +49,7 @@ namespace UnityStandardAssets.Vehicles.Car
         private bool playerDied = false;
         [SerializeField]
         private float maxDistance = 20f;
+        private CarHelper carHelper;
 
 
         private void Awake()
@@ -60,6 +61,8 @@ namespace UnityStandardAssets.Vehicles.Car
             m_RandomPerlin = Random.value*100;
 
             m_Rigidbody = GetComponent<Rigidbody>();
+
+            carHelper = GetComponent<CarHelper>();
         }
 
         public void setDriving(bool value)
@@ -71,7 +74,7 @@ namespace UnityStandardAssets.Vehicles.Car
         {
             if (!playerDied)
             {
-                //obstracleDetect();
+                setDriving(carHelper.isDead);
 
                 Vector3 offsetTargetPos = m_Target.position;
                 Vector3 localTarget = transform.InverseTransformPoint(offsetTargetPos);
@@ -80,15 +83,15 @@ namespace UnityStandardAssets.Vehicles.Car
                 {
                     m_Driving = false;
                 }
-                else if(
-                    localTarget.magnitude > m_ReachTargetThreshold || 
+                else if (
+                    localTarget.magnitude > m_ReachTargetThreshold ||
                     localTarget.magnitude <= maxDistance)
                 {
-                    if ( (localTarget.magnitude < m_ReachTargetThreshold - 5) || obstracleDetect())
+                    if ((localTarget.magnitude < m_ReachTargetThreshold - 5) || obstracleDetect())
                     {
                         m_CarController.Move(0, 0, -0.9f, 0);
                         return;
-                    } 
+                    }
 
                     m_Driving = true;
                 }
@@ -216,6 +219,7 @@ namespace UnityStandardAssets.Vehicles.Car
                     //}
                 }
             }
+            else stopCarAi();
         }
 
 

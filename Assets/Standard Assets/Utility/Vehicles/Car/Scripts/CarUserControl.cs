@@ -20,11 +20,15 @@ namespace UnityStandardAssets.Vehicles.Car
         public ParticleSystem shieldParticle;
         public Slider resolveCounterSlider;
 
+        private CarHelper carHelper;
+
         private void Awake()
         {
             // get the car controller
             m_Car = GetComponent<CarController>();
             resolveCounterSlider.value = 0;
+
+            carHelper = GetComponent<CarHelper>();
         }
 
 
@@ -34,13 +38,22 @@ namespace UnityStandardAssets.Vehicles.Car
             float h = CrossPlatformInputManager.GetAxis("Horizontal");
             float v = CrossPlatformInputManager.GetAxis("Vertical");
 
-            makeShield();
+            if (!carHelper.isDead)
+            {
+                makeShield();
 #if !MOBILE_INPUT
-            float handbrake = CrossPlatformInputManager.GetAxis("Jump");
-            m_Car.Move(h, v, v, handbrake);
+                float handbrake = CrossPlatformInputManager.GetAxis("Jump");
+                m_Car.Move(h, v, v, handbrake);
 #else
             m_Car.Move(h, v, v, 0f);
 #endif
+            }
+            else
+            {
+                m_Car.Move(0f, 0f, 0f, 1f);
+                stopAllEnemy();
+            }
+
         }
 
 
@@ -155,6 +168,34 @@ namespace UnityStandardAssets.Vehicles.Car
                 {
                     EnemyCanonBullet enemyBullet = collider.gameObject.GetComponent<EnemyCanonBullet>();
                     enemyBullet.bulletHelper.destroyObject(enemyBullet.gameObject);
+                }
+            }
+        }
+
+
+        private void stopAllEnemy()
+        {
+            if (gameObject.tag == "Player")
+            {
+                GameObject[] allEnemyCar = GameObject.FindGameObjectsWithTag("Enemy");
+
+                if (allEnemyCar.Length > 0)
+                {
+                    foreach (GameObject gameObjectEnemy in allEnemyCar)
+                    {
+                        if (gameObjectEnemy != null)
+                        {
+                            CarAIControl carAIControl = gameObjectEnemy.GetComponent<CarAIControl>();
+                            EnemyGun enemyGun = gameObjectEnemy.GetComponent<EnemyGun>();
+
+                            if ((carAIControl != null) && (enemyGun != null))
+                            {
+                                carAIControl.stopCarAi();
+                                enemyGun.stopShooting();
+                            }
+                        }
+                        else break;
+                    }
                 }
             }
         }

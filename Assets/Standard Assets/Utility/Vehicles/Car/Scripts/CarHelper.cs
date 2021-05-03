@@ -9,8 +9,10 @@ namespace UnityStandardAssets.Vehicles.Car
         public Slider healthSlider;
         public float carMaxHealth;
         public ParticleSystem explotionParticleSystem;
+        public AudioSource explotionAudioSource;
 
         private Camera mainCam;
+        public bool isDead = false;
 
         // Use this for initialization
         void Start()
@@ -24,10 +26,13 @@ namespace UnityStandardAssets.Vehicles.Car
         // Update is called once per frame
         void Update()
         {
-            destroyAllComponents();
+            if ( ! isDead )
+            {
+                destroyAllComponents();
 
-            if (gameObject.name == "Car") updateCarHealth();
-            else if (gameObject.name == "EnemyCar") updateEnemyHealth(); 
+                if (gameObject.name == "Car") updateCarHealth();
+                else if (gameObject.name == "EnemyCar") updateEnemyHealth();
+            }
         }
 
 
@@ -55,37 +60,52 @@ namespace UnityStandardAssets.Vehicles.Car
 
         private void destroyAllComponents()
         {
-            if (healthHelper.getCurentHealth() <= 0)
+            if (healthHelper.getCurentHealth() <= 0 && !isDead)
             {
-                stopAllEnemy();
+                playExplotionAudio();
+                //stopAll();
                 explotionParticleSystem.Play();
                 healthSlider.gameObject.SetActive(false);
-                foreach (var comp in gameObject.GetComponents<Component>())
-                {
-                    if (
-                        !(comp is Transform) &&
-                        !(comp is CarController)
-                        )
-                    {
-                        Destroy(comp);
-                    }
-                }
+                isDead = true;
             }
         }
 
 
-        private void stopAllEnemy()
+        private void stopAll()
         {
             if (gameObject.tag == "Player")
             {
                 GameObject[] allEnemyCar = GameObject.FindGameObjectsWithTag("Enemy");
 
-                foreach (GameObject gameObjectEnemy in allEnemyCar)
+                if(allEnemyCar.Length > 0)
                 {
-                    gameObjectEnemy.GetComponent<CarAIControl>().stopCarAi();
-                    gameObjectEnemy.GetComponent<EnemyGun>().stopShooting();
+                    foreach (GameObject gameObjectEnemy in allEnemyCar)
+                    {
+                        if (gameObjectEnemy != null)
+                        {
+                            gameObjectEnemy.GetComponent<CarAIControl>().stopCarAi();
+                            gameObjectEnemy.GetComponent<EnemyGun>().stopShooting();
+                        }
+                        else break;
+                    }
                 }
-            }
+            } 
+
+            //if( gameObject.tag == "Player")
+            //{
+            //    GameObject playerCar = GameObject.FindGameObjectWithTag("Player");
+
+            //    playerCar.GetComponent<CarController>().enabled = false;
+            //    playerCar.GetComponent<CarUserControl>().enabled = false;
+            //    playerCar.GetComponent<CarAudio>().enabled = false;
+            //    playerCar.GetComponent<CarGun>().enabled = false;
+            //}
+        }
+
+
+        private void playExplotionAudio()
+        {
+            explotionAudioSource.Play();
         }
     }
 }

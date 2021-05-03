@@ -79,7 +79,10 @@ namespace UnityStandardAssets.Vehicles.Car
 
         private void Update()
         {
-            if (carHelper.healthHelper.getCurentHealth() <= 0) afterExplotionFireEffect.gameObject.SetActive(true) ;
+            if (carHelper.healthHelper.getCurentHealth() <= 0)
+            {
+                afterExplotionFireEffect.gameObject.SetActive(true);
+            }
         }
 
 

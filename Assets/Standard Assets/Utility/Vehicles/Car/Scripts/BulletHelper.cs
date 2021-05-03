@@ -9,8 +9,13 @@ namespace UnityStandardAssets.Vehicles.Car
             if (gameObject.name == searchName)
             {
                 CarHelper carHelper = gameObject.GetComponent<CarHelper>();
-                carHelper.healthHelper.setDamageAmount(damage);
-                carHelper.healthHelper.getDamage();
+
+                if (carHelper != null)
+                {
+                    carHelper.healthHelper.setDamageAmount(damage);
+                    carHelper.healthHelper.getDamage();
+                }
+                else return;
             }
             destroyObject(bullet);
         }

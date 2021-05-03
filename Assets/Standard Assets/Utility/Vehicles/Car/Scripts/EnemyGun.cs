@@ -28,11 +28,13 @@ namespace UnityStandardAssets.Vehicles.Car
         private float currentTimeForCanon = 0f;
         private bool playerDied = false;
         private float maxDistance = 30f;
+        private CarHelper carHelper;
 
 
         // Start is called before the first frame update
         void Start()
         {
+            carHelper = GetComponent<CarHelper>();
             gunHelper = new CarGunHelper();
             gunHelper.rotateSpeed = 9;
             gunHelper.timeIntervalBullet = 0.6f;
@@ -46,7 +48,11 @@ namespace UnityStandardAssets.Vehicles.Car
         // Update is called once per frame
         void Update()
         {
-            if( !playerDied && enemyCarHelper.isNear(transform.position, target.position, maxDistance)) rotateHolders();
+            if( !playerDied && enemyCarHelper.isNear(transform.position, target.position, maxDistance))
+            {
+                rotateHolders();
+                playerDied = carHelper.isDead;
+            }
         }
 
 

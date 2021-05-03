@@ -17,7 +17,7 @@ namespace UnityStandardAssets.Vehicles.Car
 
             else if (hitGameObject.tag == "Enemy")
             {
-                bulletHelper.searchAndDestroy(hitGameObject, hitGameObject.name, gameObject, 6f);
+                bulletHelper.searchAndDestroy(hitGameObject, hitGameObject.name, gameObject, 10f);
             }
         }
 
