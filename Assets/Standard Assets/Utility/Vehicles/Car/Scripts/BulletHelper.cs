@@ -24,6 +24,5 @@ namespace UnityStandardAssets.Vehicles.Car
         {
             Destroy(gameObject);
         }
-
     }
 }

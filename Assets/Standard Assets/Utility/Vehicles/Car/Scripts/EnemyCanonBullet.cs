@@ -5,6 +5,9 @@ namespace UnityStandardAssets.Vehicles.Car {
     {
         private Transform target;
         private float movementTime = 0;
+        private float canonBulletDamage = 7f;
+        private float carLayer = 11;
+
         public BulletHelper bulletHelper;
 
         // Start is called before the first frame update
@@ -27,14 +30,15 @@ namespace UnityStandardAssets.Vehicles.Car {
 
             transform.LookAt(target.position);
 
-            transform.position = Vector3.MoveTowards(transform.position, target.position, 15 * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, target.position, Time.deltaTime * 15);
+            Debug.Log(transform.position);
         }
 
 
         private void OnCollisionEnter(Collision collision)
         {
-
-            bulletHelper.searchAndDestroy(collision.gameObject, "Car", gameObject, 10f);
+            if(collision.gameObject.layer == carLayer)
+                bulletHelper.searchAndDestroy(collision.gameObject, "Car", gameObject, canonBulletDamage);
         }
     }
 }

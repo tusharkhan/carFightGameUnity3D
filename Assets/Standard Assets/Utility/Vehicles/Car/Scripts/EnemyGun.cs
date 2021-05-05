@@ -105,6 +105,7 @@ namespace UnityStandardAssets.Vehicles.Car
 
             if (calculateTimeForCanon() >= gunHelper.timeIntervalCanonBullet)
             {
+                Debug.Log("Canon shoot");
                 shootCanon();
                 currentTimeForCanon = 0;
             }

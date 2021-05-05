@@ -37,8 +37,7 @@ namespace UnityStandardAssets.Vehicles.Car
             Vector3 newDirection = Vector3.RotateTowards(objectToRotate.forward, targetDirection, singleStep, 0.0f);
 
             // Draw a ray pointing at our target in
-            Debug.DrawRay(objectToRotate.position, newDirection, Color.red);
-
+            //Debug.DrawRay(objectToRotate.position, newDirection, Color.red);
             // Calculate a rotation a step closer to the target and applies rotation to this object
             objectToRotate.rotation = Quaternion.LookRotation(newDirection);
         }
@@ -50,7 +49,7 @@ namespace UnityStandardAssets.Vehicles.Car
             GameObject bulletObject = makeBullet(bullet, spwonPoint);
             Rigidbody bulletObjectRigid = bulletObject.GetComponent<Rigidbody>();
             bulletObjectRigid.velocity = bulletObject.transform.TransformDirection(Vector3.forward * bulletSpeed);
-            bulletObject.transform.rotation = Quaternion.Euler(Vector3.forward);
+            bulletObject.transform.rotation = Quaternion.Euler(new Vector3(90f, 0, 0));
         }
 
 
