@@ -6,16 +6,15 @@ namespace UnityStandardAssets.Vehicles.Car
     {
         public BulletHelper bulletHelper;
         public string bulletName;
+        public ParticleSystem impactParticls;
 
         [SerializeField]private float enemyCarBullerDamage = 4f;
-        [SerializeField]private float enemyCanonBullerDamage = 7f;
-
-        [SerializeField]private float carCanonBullerDamage = 10f;
         [SerializeField]private float carBullerDamage = 7f;
         private float counter = 0;
         private void OnCollisionEnter(Collision collision)
         {
             GameObject hitGameObject = collision.gameObject;
+            
 
             if ( (hitGameObject.name == "Car") )
             {
@@ -24,6 +23,7 @@ namespace UnityStandardAssets.Vehicles.Car
                         hitGameObject.name,
                         gameObject,
                         enemyCarBullerDamage );
+                bulletHelper.makeImpact(collision, impactParticls);
 
             }
             else if ( (hitGameObject.tag == "Enemy") )
@@ -33,6 +33,7 @@ namespace UnityStandardAssets.Vehicles.Car
                     hitGameObject.name, 
                     gameObject,
                     carBullerDamage);
+                bulletHelper.makeImpact(collision, impactParticls);
             }
         }
 
@@ -46,6 +47,7 @@ namespace UnityStandardAssets.Vehicles.Car
 
         private void Update()
         {
+            transform.Rotate( new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, 90) );
             counter += Time.deltaTime;
 
             if (counter >= 7f)

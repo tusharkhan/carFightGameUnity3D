@@ -144,7 +144,7 @@ namespace UnityStandardAssets.Vehicles.Car {
         //Uppr canon fire
         private void rotateUpperCanon()
         {
-            Collider[] colliders = Physics.OverlapSphere(transform.position, 20, 1 << enamyLayer);
+            Collider[] colliders = Physics.OverlapSphere(transform.position, 25, 1 << enamyLayer);
 
             foreach(Collider collider in colliders)
             {
@@ -153,7 +153,7 @@ namespace UnityStandardAssets.Vehicles.Car {
                     Transform rootGameObject = collider.gameObject.transform.root;
                     Transform target = rootGameObject.GetChild(0);
 
-                    gunHelper.rotate(upperCanonMovingPart, target.transform);
+                    gunHelper.rotate(upperCanonMovingPart, target.transform, false);
 
                     if (Input.GetButtonDown("Fire3"))
                     {

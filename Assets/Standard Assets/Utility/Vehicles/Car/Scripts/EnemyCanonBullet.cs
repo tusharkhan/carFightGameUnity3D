@@ -31,7 +31,6 @@ namespace UnityStandardAssets.Vehicles.Car {
             transform.LookAt(target.position);
 
             transform.position = Vector3.MoveTowards(transform.position, target.position, Time.deltaTime * 15);
-            Debug.Log(transform.position);
         }
 
 

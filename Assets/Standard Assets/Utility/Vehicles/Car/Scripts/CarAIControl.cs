@@ -45,12 +45,17 @@ namespace UnityStandardAssets.Vehicles.Car
         private float m_AvoidOtherCarSlowdown;    // how much to slow down due to colliding with another car, whilst avoiding
         private float m_AvoidPathOffset;          // direction (-1 or 1) in which to offset path to avoid other car, whilst avoiding
         private Rigidbody m_Rigidbody;
-        [SerializeField]
-        private bool playerDied = false;
-        [SerializeField]
-        private float maxDistance = 20f;
-        private CarHelper carHelper;
+        [SerializeField] private bool playerDied = false;
+        [SerializeField] private float maxDistance = 20f;
 
+
+        private CarHelper carHelper;
+        private EnemyGun enemyGun;
+
+
+        private float steer;
+        private float accel;
+        private int obstracleIn;
 
         private void Awake()
         {
@@ -63,6 +68,7 @@ namespace UnityStandardAssets.Vehicles.Car
             m_Rigidbody = GetComponent<Rigidbody>();
 
             carHelper = GetComponent<CarHelper>();
+            enemyGun = GetComponent<EnemyGun>();
         }
 
         public void setDriving(bool value)
@@ -72,28 +78,41 @@ namespace UnityStandardAssets.Vehicles.Car
 
         private void FixedUpdate()
         {
+            setDriving(carHelper.isDead);
             if (!playerDied)
             {
-                setDriving(carHelper.isDead);
+                //
 
                 Vector3 offsetTargetPos = m_Target.position;
                 Vector3 localTarget = transform.InverseTransformPoint(offsetTargetPos);
+                string targetPosition = AllHelperFunctions.whereIsObject(transform, enemyGun.getTarget(), false);
+
+                //Debug.Log(targetPosition);
 
                 if (localTarget.magnitude >= maxDistance)
                 {
                     m_Driving = false;
                 }
-                else if (
+                else if ((
                     localTarget.magnitude > m_ReachTargetThreshold ||
-                    localTarget.magnitude <= maxDistance)
+                    localTarget.magnitude <= maxDistance) && 
+                    (
+                    String.Compare(targetPosition, "down") != 0
+                    )
+                    )
                 {
-                    if ((localTarget.magnitude < m_ReachTargetThreshold - 5) || obstracleDetect())
-                    {
-                        m_CarController.Move(0, 0, -0.9f, 0);
-                        return;
-                    }
+                    //if ((localTarget.magnitude < m_ReachTargetThreshold - 5) || obstracleDetect())
+                    //{
+                    //    if (obstracleIn == 1) m_CarController.Move(steer += 0.5f, 0, -0.9f, 0);
+                    //    else if (obstracleIn == -1) m_CarController.Move(steer -= 0.5f, 0, -0.9f, 0);
+                        
+                    //    return;
+                    //}
 
                     m_Driving = true;
+                    //m_CarController.Move(0, accel , accel, 0);
+
+                    
                 }
 
                 if (m_Target == null || !m_Driving)
@@ -187,7 +206,7 @@ namespace UnityStandardAssets.Vehicles.Car
                                                       : m_AccelSensitivity;
 
                     // decide the actual amount of accel/brake input to achieve desired speed.
-                    float accel = Mathf.Clamp((desiredSpeed - m_CarController.CurrentSpeed) * accelBrakeSensitivity, -1, 1);
+                    accel = Mathf.Clamp((desiredSpeed - m_CarController.CurrentSpeed) * accelBrakeSensitivity, -1, 1);
 
                     // add acceleration 'wander', which also prevents AI from seeming too uniform and robotic in their driving
                     // i.e. increasing the accel wander amount can introduce jostling and bumps between AI cars in a race
@@ -201,10 +220,17 @@ namespace UnityStandardAssets.Vehicles.Car
                     float targetAngle = Mathf.Atan2(localTarget.x, localTarget.z) * Mathf.Rad2Deg;
 
                     // get the amount of steering needed to aim the car towards the target
-                    float steer = Mathf.Clamp(targetAngle * m_SteerSensitivity, -1, 1) * Mathf.Sign(m_CarController.CurrentSpeed);
+                    steer = Mathf.Clamp(targetAngle * m_SteerSensitivity, -1, 1) * Mathf.Sign(m_CarController.CurrentSpeed);
 
                     // feed input to the car controller.
-                    m_CarController.Move(steer, accel * 2, accel, 0f);
+
+                    if ((localTarget.magnitude < m_ReachTargetThreshold - 5) || obstracleDetect())
+                    {
+                        if (obstracleIn == 1) steer += 0.9f;
+                        else if (obstracleIn == -1) steer -= 0.9f;
+                        accel -= 0.7f;
+                    }
+                        m_CarController.Move(steer, accel * 2, accel, 0f);
 
                     // if appropriate, stop driving when we're close enough to the target.
                     //if (m_StopWhenTargetReached && localTarget.magnitude < m_ReachTargetThreshold)
@@ -227,7 +253,6 @@ namespace UnityStandardAssets.Vehicles.Car
         {
             m_CarController.Move(1, 0, -0.9f, 0);
             Debug.Log("Moving Back");
-            return;
         }
 
 
@@ -237,7 +262,29 @@ namespace UnityStandardAssets.Vehicles.Car
 
             foreach(Collider collide in colliders)
             {
-                if (collide.gameObject.tag == "collideEnv") return true;
+                if (collide.gameObject.tag == "collideEnv")
+                {
+
+                    //Vector3 enemyDirectionLocal = transform.InverseTransformPoint(collide.gameObject.transform.position);
+
+                    string enemyDirectionLocal = AllHelperFunctions.whereIsObject(transform, collide.gameObject.transform);
+
+                    if((String.Compare(enemyDirectionLocal, "up") != 0) &&
+                        (String.Compare(enemyDirectionLocal, "down") != 0))
+                    {
+                        if (String.Compare(enemyDirectionLocal, "left") == 0)
+                        {
+                            obstracleIn = 1;
+                        }
+                        else if (String.Compare(enemyDirectionLocal, "right") == 0)
+                        {
+                            obstracleIn = -1;
+                        }
+
+                        return true;
+                    }
+                }
+                //else obstracleIn = 0;
             }
             return false;
         }

@@ -25,7 +25,7 @@ namespace UnityStandardAssets.Vehicles.Car
         }
 
         //rotate towords target
-        public void rotate(Transform objectToRotate, Transform target)
+        public void rotate(Transform objectToRotate, Transform target, bool yAxis = true)
         {
             // Determine which direction to rotate towards
             Vector3 targetDirection = target.position - objectToRotate.position;
@@ -39,7 +39,8 @@ namespace UnityStandardAssets.Vehicles.Car
             // Draw a ray pointing at our target in
             //Debug.DrawRay(objectToRotate.position, newDirection, Color.red);
             // Calculate a rotation a step closer to the target and applies rotation to this object
-            objectToRotate.rotation = Quaternion.LookRotation(newDirection);
+            if( yAxis ) objectToRotate.rotation = Quaternion.LookRotation(newDirection);
+            else objectToRotate.rotation = Quaternion.LookRotation(new Vector3(newDirection.x, 0f, newDirection.z));
         }
 
 

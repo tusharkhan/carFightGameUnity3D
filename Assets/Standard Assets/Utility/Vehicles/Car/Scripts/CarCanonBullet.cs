@@ -8,17 +8,38 @@ namespace UnityStandardAssets.Vehicles.Car
         private Transform target;
         private float enemyCarLayer = 12f;
         private float carCanonDamage = 30f;
-        private BulletHelper bulletHelper;
+        private float movementTime = 0;
+        private MakeAudioSource makeAudio;
+
+        public AudioSource audioSource;
+        public BulletHelper bulletHelper;
         // Use this for initialization
         void Start()
         {
             bulletHelper = new BulletHelper();
+            makeAudio = new MakeAudioSource();
         }
+
+
+        private void Awake()
+        {
+            audioSource.Play();
+        }
+
 
         // Update is called once per frame
         void Update()
         {
             if (target == null) return;
+
+            movementTime += Time.deltaTime;
+
+            if (movementTime >= 4f)
+            {
+                bulletHelper.destroyObject(gameObject);
+                return;
+            }
+
             moveCanonBullet();
         }
 
@@ -37,7 +58,7 @@ namespace UnityStandardAssets.Vehicles.Car
         private void moveCanonBullet()
         {
             transform.LookAt(getTarget().position);
-            transform.Rotate(new Vector3(90, getTarget().eulerAngles.y, getTarget().eulerAngles.z));
+            transform.Rotate(new Vector3(-90, getTarget().rotation.y, getTarget().rotation.z));
             transform.position = Vector3.MoveTowards(transform.position, getTarget().position, Time.deltaTime * 10);
         }
 
@@ -45,7 +66,10 @@ namespace UnityStandardAssets.Vehicles.Car
         private void OnCollisionEnter(Collision collision)
         {
             if (collision.gameObject.layer == enemyCarLayer)
+            {
                 bulletHelper.searchAndDestroy(collision.gameObject, "EnemyCar", gameObject, carCanonDamage);
+            }
         }
+
     }
 }

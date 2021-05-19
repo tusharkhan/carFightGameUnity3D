@@ -4,7 +4,7 @@ namespace UnityStandardAssets.Vehicles.Car
 {
     public class UnderWaterCollider : MonoBehaviour
     {
-        public LayerMask layerMask;
+        private float carLayerMask = 11;
         public GameObject car;
 
         private bool isCollidingWithCar = false;
@@ -31,7 +31,8 @@ namespace UnityStandardAssets.Vehicles.Car
             foreach(Collider underEaterColliders in boxColliders)
             {
                 GameObject collideGameobject = underEaterColliders.gameObject;
-                if (collideGameobject.layer == 9) isCollidingWithCar = true;
+
+                if (collideGameobject.layer == carLayerMask) isCollidingWithCar = true;
                 else isCollidingWithCar = false;
             }
         }

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 
 namespace UnityStandardAssets.Vehicles.Car
 {
@@ -48,7 +49,8 @@ namespace UnityStandardAssets.Vehicles.Car
         // Update is called once per frame
         void Update()
         {
-            if( !playerDied && enemyCarHelper.isNear(transform.position, target.position, maxDistance))
+            string targetPosition = AllHelperFunctions.whereIsObject(transform, target, false);
+            if( !playerDied && enemyCarHelper.isNear(transform.position, target.position, maxDistance) && String.Compare("down", targetPosition) != 0)
             {
                 rotateHolders();
                 playerDied = carHelper.isDead;
@@ -135,6 +137,13 @@ namespace UnityStandardAssets.Vehicles.Car
         {
             leftMuzzleFlash.SetActive(false);
             rightMuzzleFlash.SetActive(false);
+        }
+
+
+        public Transform getTarget()
+        {
+            if( target == null ) return GameObject.Find("Target").transform;
+            return target;
         }
     }
 }
